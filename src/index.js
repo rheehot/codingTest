@@ -31,13 +31,13 @@ DO NOT MODIFY
 
 
 // self-closing tag
-const findSelfClosingTag = (tag = t1) => {
+const findSelfClosingTag = tag => {
   const tSelfCloseRe = /\<[a-zA-z]\/\>/
   return tSelfCloseRe.exec(tag.replace(" ", ""))
 }
 
 // find all tag
-const findTag = (tag = "<a>test</a>") => {
+const findTag = tag => {
   const tNormRe = /\>*\</
   const fArr = tag.split(tNormRe)
   
@@ -46,9 +46,11 @@ const findTag = (tag = "<a>test</a>") => {
 
 exports.isValidXML = xmlString => {
   const len = xmlString.length;
-  const numsLeftBracket = xmlString.match(/\</g).length || undefined;
-  const numsRightBracket = xmlString.match(/\>/g).length || undefined;
-  const numsSlash = xmlString.match(/\//g).length || undefined;
+  const numsLeftBracket = xmlString.match(/\</g) && xmlString.match(/\</g).length
+  const numsRightBracket =
+    xmlString.match(/\>/g) && xmlString.match(/\>/g).length;
+  const numsSlash =
+    (xmlString.match(/\//g) && xmlString.match(/\//g).length)
   const isSelfClose = findSelfClosingTag(xmlString);
   const isDiffBracket = numsLeftBracket === numsRightBracket;
   const isDiffSlash = numsSlash * 2 === numsLeftBracket;
@@ -77,7 +79,7 @@ exports.isValidXML = xmlString => {
     return false;
   }
 
-  if (findTagResult.length > 4) {
+  if (findTagResultAll.length > 2) {
     console.log("too deep");
     return false;
   }
@@ -88,15 +90,9 @@ exports.isValidXML = xmlString => {
   }
 
   for (let i in findTagResultAll) {
-    const lenFindTag = findTagResultAll.length;
-    const stack = [...findTagResultAllSet];
-    const crit = [...findTagResultAll.slice(lenFindTag, lenFindTag)];
-
     result =
       `/${findTagResult[i]}` === findTagResult[findTagResult.length - i - 1]; // 양쪽에서 뽑아서 비교
 
-    if (!result) {
-    }
   }
 
   return true;
